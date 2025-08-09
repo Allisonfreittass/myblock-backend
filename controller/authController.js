@@ -121,12 +121,23 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     const userId = req.userId;
-    const { name, phone, zipCode, profilePictureUrl } = req.body;
+    const { name, phone, zipCode } = req.body;
+
+    const updateData = {};
+
+    if (name) updateData.name = name;
+    if (phone) updateData.phone = phone;
+    if (zipCode) updateData.zipCode = zipCode;
+
+    if (req.file) {
+        const profilePictureUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        updateData.profilePictureUrl = profilePictureUrl
+    }
 
     try {
         const updateUser = await User.findByIdAndUpdate(
             userId,
-            { name, phone, zipCode, profilePictureUrl },
+            updateData,
             {new: true}
         ).select('-password')
 
@@ -135,7 +146,7 @@ exports.updateProfile = async (req, res) => {
         res.status(200).json({
             message: 'Perfil atualizado com successo',
             user: updateUser
-            
+
         })
     } catch(error) {
         console.error('Erro ao atualizar', error.message)
