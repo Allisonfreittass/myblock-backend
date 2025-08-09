@@ -6,7 +6,8 @@ const auth = require('../services/auth')
 router.post('/login', authController.login)
 router.post('/register', authController.register)
 
-router.get('/get', authController.getProfile)
+router.get('/me', auth.authorize, authController.getProfile)
 
+router.put('/associate-wallet', auth.authorize, authController.associateWallet)
 
 module.exports = router;

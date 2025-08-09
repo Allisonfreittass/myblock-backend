@@ -70,11 +70,38 @@ exports.login = async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email,
-                walletAdress: user.walletAdress
+                walletAddress: user.walletAdress
             }
         })
     } catch (error) {
         console.error('Erro ao registrar', error.message)
+        throw error
+    }
+}
+
+exports.associateWallet = async (req, res) => {
+    const { walletAddress } = req.body;
+    const userId = req.userId
+
+    if (!walletAddress) {
+        return res.status(400).json({ message: 'Endereço da carteira não fornecido'})
+    }
+    try {
+        const updateUser = await User.findByIdAndUpdate(
+            userId, 
+            { walletAddress: walletAddress},
+            { new: true}
+        ).select('-password')
+        
+        if (!updateUser) return res.status(400).json({ message: 'Erro ao atualizar usuário!'})
+
+        res.status(200).json({
+            message: 'Carteira associada com sucesso!',
+            user: updateUser
+        })
+        
+    } catch (error) {
+        console.error('Erro ao executar', error.message)
         throw error
     }
 }
