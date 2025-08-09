@@ -1,0 +1,161 @@
+{
+  "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+  "abi": [
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "createdContract",
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "id",
+          "indexed": false
+        },
+        {
+          "type": "address",
+          "name": "locador",
+          "indexed": true
+        },
+        {
+          "type": "address",
+          "name": "locatario",
+          "indexed": true
+        },
+        {
+          "type": "uint256",
+          "name": "valor",
+          "indexed": false
+        },
+        {
+          "type": "string",
+          "name": "imovel",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "createdAt",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "Contracts",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": "id"
+        },
+        {
+          "type": "address",
+          "name": "locatario"
+        },
+        {
+          "type": "address",
+          "name": "locador"
+        },
+        {
+          "type": "uint256",
+          "name": "valor"
+        },
+        {
+          "type": "string",
+          "name": "imovel"
+        },
+        {
+          "type": "uint256",
+          "name": "createdAt"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "createContract",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_locatario"
+        },
+        {
+          "type": "uint256",
+          "name": "_valor"
+        },
+        {
+          "type": "string",
+          "name": "_imovel"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "getContract",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_id"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "",
+          "components": [
+            {
+              "type": "uint256",
+              "name": "id"
+            },
+            {
+              "type": "address",
+              "name": "locatario"
+            },
+            {
+              "type": "address",
+              "name": "locador"
+            },
+            {
+              "type": "uint256",
+              "name": "valor"
+            },
+            {
+              "type": "string",
+              "name": "imovel"
+            },
+            {
+              "type": "uint256",
+              "name": "createdAt"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "totalContratos",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ]
+    }
+  ]
+}
