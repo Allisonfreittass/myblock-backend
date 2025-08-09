@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema ({
+    name: {
+        type: String,
+        default: ''
+    },
     email: {
         type: String,
         require: true,
@@ -13,6 +17,14 @@ const userSchema = new mongoose.Schema ({
     walletAddress: {
         type: String,
         default: '',
+    },
+    zipCode: {
+        type: String,
+        default: ''
+    },
+    profilePictureUrl: {
+        type: String,
+        default: ''
     },
     createdAt: {
         type: Date,

@@ -10,4 +10,6 @@ router.get('/me', auth.authorize, authController.getProfile)
 
 router.put('/associate-wallet', auth.authorize, authController.associateWallet)
 
+router.put('/me', auth.authorize, authController.updateProfile)
+
 module.exports = router;

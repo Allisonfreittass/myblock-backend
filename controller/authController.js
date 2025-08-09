@@ -118,3 +118,27 @@ exports.getProfile = async (req, res) => {
         throw error
     }
 }
+
+exports.updateProfile = async (req, res) => {
+    const userId = req.userId;
+    const { name, phone, zipCode, profilePictureUrl } = req.body;
+
+    try {
+        const updateUser = await User.findByIdAndUpdate(
+            userId,
+            { name, phone, zipCode, profilePictureUrl },
+            {new: true}
+        ).select('-password')
+
+        if (!updateUser) return res.status(400).json({ message: 'Usuário não encontrado'})
+
+        res.status(200).json({
+            message: 'Perfil atualizado com successo',
+            user: updateUser
+            
+        })
+    } catch(error) {
+        console.error('Erro ao atualizar', error.message)
+        throw error
+    }
+}
