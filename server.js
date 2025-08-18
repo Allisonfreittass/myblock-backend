@@ -4,6 +4,7 @@ const path = require('path')
 const cors = require('cors');
 const contractRouter = require('./routes/contract-routes');
 const authRouter = require('./routes/auth-routes');
+const propertyRouter = require('./routes/properties-routes')
 const mongoose = require('mongoose');
 const multer = require('multer');
 
@@ -13,7 +14,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-
+app.use('/api', propertyRouter);
 app.use('/api', contractRouter);
 app.use('/auth', authRouter);
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')))
