@@ -7,4 +7,8 @@ router.get('/properties', propertyController.listAll)
 
 router.post('/properties', auth.authorize, propertyController.createProperty)
 
+router.get('/properties/:id', propertyController.getPropertyById)
+
+router.put('/properties/:id/status', auth.authorize, propertyController.updatePropertyStatus)
+
 module.exports = router;
