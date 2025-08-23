@@ -4,7 +4,7 @@ const path = require('path')
 const { error } = require('console')
 
 async function main() {
-    const Rent = await hre.ethers.getContractFactory('rent')
+    const Rent = await hre.ethers.getContractFactory('Rent')
     const rent = await Rent.deploy()
 
     await rent.waitForDeployment()
