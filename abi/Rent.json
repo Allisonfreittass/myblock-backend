@@ -1,15 +1,20 @@
 {
-  "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
   "abi": [
+    {
+      "type": "error",
+      "name": "ReentrancyGuardReentrantCall",
+      "inputs": []
+    },
     {
       "type": "event",
       "anonymous": false,
-      "name": "createdContract",
+      "name": "ContratoCriado",
       "inputs": [
         {
           "type": "uint256",
           "name": "id",
-          "indexed": false
+          "indexed": true
         },
         {
           "type": "address",
@@ -23,24 +28,58 @@
         },
         {
           "type": "uint256",
-          "name": "valor",
-          "indexed": false
-        },
-        {
-          "type": "string",
-          "name": "imovel",
+          "name": "valorAluguel",
           "indexed": false
         },
         {
           "type": "uint256",
-          "name": "createdAt",
+          "name": "proximoVencimento",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "ContratoFinalizado",
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "id",
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "PagamentoRecebido",
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "id",
+          "indexed": true
+        },
+        {
+          "type": "address",
+          "name": "devedor",
+          "indexed": true
+        },
+        {
+          "type": "uint256",
+          "name": "valorPago",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "novoVencimento",
           "indexed": false
         }
       ]
     },
     {
       "type": "function",
-      "name": "Contracts",
+      "name": "contratos",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
@@ -57,15 +96,15 @@
         },
         {
           "type": "address",
-          "name": "locatario"
-        },
-        {
-          "type": "address",
           "name": "locador"
         },
         {
+          "type": "address",
+          "name": "locatario"
+        },
+        {
           "type": "uint256",
-          "name": "valor"
+          "name": "valorAluguel"
         },
         {
           "type": "string",
@@ -74,6 +113,22 @@
         {
           "type": "uint256",
           "name": "createdAt"
+        },
+        {
+          "type": "uint8",
+          "name": "status"
+        },
+        {
+          "type": "uint256",
+          "name": "proximoVencimento"
+        },
+        {
+          "type": "uint256",
+          "name": "multaPorAtraso"
+        },
+        {
+          "type": "uint256",
+          "name": "ultimaAtualizacao"
         }
       ]
     },
@@ -89,11 +144,24 @@
         },
         {
           "type": "uint256",
-          "name": "_valor"
+          "name": "_valorAluguel"
         },
         {
           "type": "string",
           "name": "_imovel"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "finalizarContrato",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_id"
         }
       ],
       "outputs": []
@@ -121,15 +189,15 @@
             },
             {
               "type": "address",
-              "name": "locatario"
-            },
-            {
-              "type": "address",
               "name": "locador"
             },
             {
+              "type": "address",
+              "name": "locatario"
+            },
+            {
               "type": "uint256",
-              "name": "valor"
+              "name": "valorAluguel"
             },
             {
               "type": "string",
@@ -138,10 +206,78 @@
             {
               "type": "uint256",
               "name": "createdAt"
+            },
+            {
+              "type": "uint8",
+              "name": "status"
+            },
+            {
+              "type": "uint256",
+              "name": "proximoVencimento"
+            },
+            {
+              "type": "uint256",
+              "name": "multaPorAtraso"
+            },
+            {
+              "type": "uint256",
+              "name": "ultimaAtualizacao"
             }
           ]
         }
       ]
+    },
+    {
+      "type": "function",
+      "name": "getContratosPorLocador",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_locador"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256[]",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getContratosPorLocatario",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_locatario"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256[]",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "pagarAluguel",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_id"
+        }
+      ],
+      "outputs": []
     },
     {
       "type": "function",
