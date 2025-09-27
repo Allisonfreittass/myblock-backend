@@ -22,7 +22,8 @@ if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')
             console.log("Erro ao verificar token:", err.message);
             return res.status(401).json({ message: "Token inválido ou expirado." });
         } else {
-            req.userId = decoded.userId; 
+            console.log('Payload do Token Decodificado:', decoded);
+            req.user = decoded; 
             next(); 
         }
     });

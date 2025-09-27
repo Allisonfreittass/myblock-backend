@@ -2,18 +2,15 @@ const Property = require('../models/Property');
 
 exports.createProperty = async (req, res) => {
   try {
-    // 1. Converta os campos JSON de string para objeto
     const location = JSON.parse(req.body.location);
     const details = JSON.parse(req.body.details);
     const rules = JSON.parse(req.body.rules);
     const fees = JSON.parse(req.body.fees);
 
-    // 2. Os arquivos agora estão em `req.files`
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'Nenhuma imagem foi enviada.' });
     }
     
-    // 3. Crie um array de URLs para as imagens
     const imageUrls = req.files.map(file => 
       `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
     );
@@ -22,8 +19,8 @@ exports.createProperty = async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       ownerWalletAddress: req.body.ownerWalletAddress,
-      owner: req.user.id,
-      imageUrls, // Salva o array de URLs
+      owner: req.user.userId,
+      imageUrls, 
       location,
       details,
       rules,
@@ -34,6 +31,7 @@ exports.createProperty = async (req, res) => {
     res.status(201).json(newProperty);
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: 'Erro ao criar propriedade', error: error.message });
   }
 };

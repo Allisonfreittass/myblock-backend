@@ -5,6 +5,7 @@ node_modules
 /cache
 /artifacts
 
+public/uploads
 
 # TypeChain files
 /typechain
