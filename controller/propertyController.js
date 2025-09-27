@@ -96,11 +96,12 @@ exports.updateProperty = async (req, res) => {
       );
     }
     
-    const updatedProperty = await Property.findByIdAndUpdate(propertyId, updatedData, { new: true });
+    const updatedProperty = await Property.findByIdAndUpdate(propertyId, updatedData, { new: true }).populate('owner');
 
     res.status(200).json({ message: 'Propriedade atualizada com sucesso!', property: updatedProperty });
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: 'Erro ao atualizar propriedade', error: error.message });
   }
 };
