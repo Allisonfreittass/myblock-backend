@@ -70,7 +70,7 @@ exports.login = async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email,
-                walletAddress: user.walletAdress
+                walletAddress: user.walletAddress
             }
         })
     } catch (error) {
@@ -108,7 +108,7 @@ exports.associateWallet = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.userId).select('-password')
+        const user = await User.findById(req.user.userId).select('-password')
         if (!user){
             return res.status(404).json({ message: 'Usuário não encontrado'})
         }
