@@ -45,6 +45,18 @@ exports.listAll = async (req, res) => {
     }
 }
 
+exports.listByOwner = async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const properties = await Property.find({ owner: userId}).populate('owner', 'name email')
+
+    res.status(200).send(properties)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Erro ao listar', error: error.message})
+  }
+}
+
 exports.getPropertyById = async (req, res) => {
     try {
         const property = await Property.findById(req.params.id).populate('owner', 'name email')
@@ -55,6 +67,66 @@ exports.getPropertyById = async (req, res) => {
         throw error
     }
 }
+
+exports.updateProperty = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    const userId = req.user.userId;
+    const propertyToUpdate = await Property.findById(propertyId);
+    if (!propertyToUpdate) {
+      return res.status(404).json({ message: 'Propriedade não encontrada.' });
+    }
+
+    if (propertyToUpdate.owner.toString() !== userId) {
+      return res.status(403).json({ message: 'Acesso negado. Você não é o proprietário deste imóvel.' });
+    }
+    
+    const updatedData = {
+      title: req.body.title,
+      description: req.body.description,
+      location: JSON.parse(req.body.location),
+      details: JSON.parse(req.body.details),
+      rules: JSON.parse(req.body.rules),
+      fees: JSON.parse(req.body.fees),
+    };
+
+    if (req.files && req.files.length > 0) {
+      updatedData.imageUrls = req.files.map(file => 
+        `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+      );
+    }
+    
+    const updatedProperty = await Property.findByIdAndUpdate(propertyId, updatedData, { new: true });
+
+    res.status(200).json({ message: 'Propriedade atualizada com sucesso!', property: updatedProperty });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar propriedade', error: error.message });
+  }
+};
+
+exports.deleteProperty = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    const userId = req.user.userId;
+
+    const propertyToDelete = await Property.findById(propertyId);
+    if (!propertyToDelete) {
+      return res.status(404).json({ message: 'Propriedade não encontrada.' });
+    }
+
+    if (propertyToDelete.owner.toString() !== userId) {
+      return res.status(403).json({ message: 'Acesso negado.' });
+    }
+
+    await Property.findByIdAndDelete(propertyId);
+
+    res.status(200).json({ message: 'Propriedade excluída com sucesso!' });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao excluir propriedade', error: error.message });
+  }
+};
 
 exports.updatePropertyStatus = async (req, res) => {
     const { status } = req.body;

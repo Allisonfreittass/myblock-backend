@@ -1,7 +1,7 @@
 'use strict'
 const jwt = require('jsonwebtoken');
 
-global.SALT_KEY = process.env.SALT_KEY;
+//global.SALT_KEY = process.env.SALT_KEY;
 
 exports.authorize = function (req, res, next) {
     let token;
@@ -17,7 +17,7 @@ if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')
         return res.status(401).json({ message: "Acesso Restrito: Token não fornecido." });
     }
 
-    jwt.verify(token, global.SALT_KEY, function(err, decoded) {
+    jwt.verify(token, process.env.SALT_KEY, function(err, decoded) {
         if (err) {
             console.log("Erro ao verificar token:", err.message);
             return res.status(401).json({ message: "Token inválido ou expirado." });

@@ -81,7 +81,7 @@ exports.login = async (req, res) => {
 
 exports.associateWallet = async (req, res) => {
     const { walletAddress } = req.body;
-    const userId = req.userId
+    const userId = req.user.userId
 
     if (!walletAddress) {
         return res.status(400).json({ message: 'Endereço da carteira não fornecido'})
@@ -120,7 +120,7 @@ exports.getProfile = async (req, res) => {
 }
 
 exports.updateProfile = async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.userId;
     const { name, phone, zipCode } = req.body;
 
     const updateData = {};
