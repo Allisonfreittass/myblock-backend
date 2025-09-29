@@ -16,8 +16,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get('/properties', propertyController.listAll)
+router.get('/properties/my', auth.authorize, propertyController.listByOwner)
 
+router.get('/properties', propertyController.listAll)
 
 router.post(
 '/properties', 
