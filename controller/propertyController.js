@@ -1,4 +1,5 @@
 const Property = require('../models/Property');
+const { getCoordenates} = require('../services/geocodingService');
 
 exports.createProperty = async (req, res) => {
   try {
@@ -15,13 +16,31 @@ exports.createProperty = async (req, res) => {
       `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
     );
 
+    const coords = await getCoordenates(
+      location.cep,
+      location.address,
+      location.city,
+      location.state
+    )
+
+    if (!coords) {
+      return res.status(400).json({
+        message: 'Endereço não encontrado, falha na consulta'
+      })
+    }
+
+    const geoLocation = {type: 'Point', coordinates: coords}
+
     const newProperty = new Property({
       title: req.body.title,
       description: req.body.description,
       ownerWalletAddress: req.body.ownerWalletAddress,
       owner: req.user.userId,
       imageUrls, 
-      location,
+      location: {
+        ...location,
+        geoLocation: geoLocation
+      },
       details,
       rules,
       fees,
@@ -38,10 +57,47 @@ exports.createProperty = async (req, res) => {
 
 exports.listAll = async (req, res) => {
     try {
-        const properties = await Property.find({ status: 'available'}).populate('owner', 'name email')
-        res.status(200).json(properties)
+        let userCoordinates = null;
+
+        if (req.user && req.user.geoLocation && req.user.geoLocation.coordinates[0] !== 0) {
+            userCoordinates = req.user.geoLocation.coordinates;
+        }
+
+        let query = {};
+        let sortOptions = {};
+
+        const baseQuery = {
+            status: 'available'
+        };
+
+        if (userCoordinates) {
+            query = {
+                ...baseQuery,
+                'location.geoLocation': {
+                    $near: {
+                        $geometry: {
+                            type: 'Point',
+                            coordinates: userCoordinates
+                        }
+                    }
+                }
+            };
+        
+        } else {
+
+            query = baseQuery;
+            sortOptions = { createdAt: -1 }; 
+        }
+
+        const properties = await Property.find(query)
+            .sort(sortOptions)
+            .populate('owner', 'name email');
+
+        res.status(200).json(properties);
+
     } catch(error) {
-        res.status(500).json({ message: 'Erro ao listar', error: error.message})
+        console.log(error);
+        res.status(500).json({ message: 'Erro ao listar', error: error.message});
     }
 }
 

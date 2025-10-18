@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const propertyController = require('../controller/propertyController');
 const auth = require('../services/auth');
+const loadUserOptional = require('../middleware/loadUserOptional')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -18,7 +19,7 @@ const upload = multer({ storage: storage });
 
 router.get('/properties/my', auth.authorize, propertyController.listByOwner)
 
-router.get('/properties', propertyController.listAll)
+router.get('/properties', loadUserOptional, propertyController.listAll)
 
 router.post(
 '/properties', 

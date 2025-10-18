@@ -33,6 +33,17 @@ const propertySchema = new mongoose.Schema({
         state: {
             type: String,
             required: true
+        },
+        geoLocation: {
+            type: {
+                type: String,
+                enum: ['Point'],
+                required: true
+            },
+            coordinates: {
+                type: [Number],
+                required: true
+            }
         }
     },
     details: {
@@ -100,5 +111,7 @@ const propertySchema = new mongoose.Schema({
         default: 'available' 
     }
 }, { timestamps: true });
+
+propertySchema.index({ 'location.geoLocation': '2dsphere'})
 
 module.exports = mongoose.model('Property', propertySchema);
