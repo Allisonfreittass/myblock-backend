@@ -47,11 +47,12 @@ exports.listContract = async (req, res) => {
 
     for (let i = 1; i <= Number(total); i++) {
       const contrato = await contratoInstance.getContract(i)
+
       contratos.push({
         id: Number(contrato.id),
         locador: contrato.locador,
         locatario: contrato.locatario,
-        valor: contrato.valor.toString(),
+        valor: contrato.valorAluguel.toString(),
         imovel: contrato.imovel,
         createdAt: contrato.createdAt.toString(),
       })

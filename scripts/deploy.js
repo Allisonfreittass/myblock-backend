@@ -19,10 +19,11 @@ async function main() {
     }
 
     const outputPath = path.join(__dirname, '..', 'abi', 'Rent.json')
+
     fs.mkdirSync(path.dirname(outputPath), {recursive: true})
     fs.writeFileSync(outputPath, JSON.stringify(contractData, null, 2))
 
-    console.log('abi salvo com sucesso na pasta abi')
+    console.log(`ABI salvo com sucesso em ${outputPath}`)
 }
 
 main().catch((error) => {

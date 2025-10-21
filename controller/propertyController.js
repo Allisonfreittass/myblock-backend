@@ -1,5 +1,5 @@
 const Property = require('../models/Property');
-const { getCoordenates} = require('../services/geocodingService');
+const { getCoordenates } = require('../services/geocodingService');
 
 exports.createProperty = async (req, res) => {
   try {
