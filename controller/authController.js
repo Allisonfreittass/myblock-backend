@@ -122,14 +122,25 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     const userId = req.user.userId;
-    const { name, phone, zipCode } = req.body;
+    const { 
+        name, phone, 
+        zipCode, street, number, neighborhood, city, state 
+    } = req.body;
 
     const updateData = {};
 
     if (name) updateData.name = name;
     if (phone) updateData.phone = phone;
-    if (zipCode) updateData.zipCode = zipCode;
 
+    updateData.address = {
+        zipCode: zipCode || '',
+        street: street || '',
+        number: number || '',
+        neighborhood: neighborhood || '',
+        city: city || '',
+        state: state || '',
+    };
+    
     if (req.file) {
         const profilePictureUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
         updateData.profilePictureUrl = profilePictureUrl
@@ -138,19 +149,21 @@ exports.updateProfile = async (req, res) => {
     try {
         const updateUser = await User.findByIdAndUpdate(
             userId,
-            updateData,
-            {new: true}
+            { $set: updateData }, 
+            { new: true }
         ).select('-password')
 
-        if (!updateUser) return res.status(400).json({ message: 'Usuário não encontrado'})
+        if (!updateUser) {
+            return res.status(404).json({ message: 'Usuário não encontrado' })
+        }
 
         res.status(200).json({
             message: 'Perfil atualizado com successo',
             user: updateUser
-
         })
+
     } catch(error) {
         console.error('Erro ao atualizar', error.message)
-        throw error
+        res.status(500).json({ message: 'Erro interno ao atualizar perfil.' });
     }
 }

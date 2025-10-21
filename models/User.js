@@ -22,9 +22,31 @@ const userSchema = new mongoose.Schema ({
         type: String,
         default: ''
     },
-    zipCode: {
-        type: String,
-        default: ''
+    address: {
+        zipCode: { 
+            type: String, 
+            default: '' 
+        },
+        street: { 
+            type: String, 
+            default: '' 
+        },
+        number: { 
+            type: String, 
+            default: '' 
+        },
+        neighborhood: { 
+            type: String, 
+            default: '' 
+        },
+        city: { 
+            type: String, 
+            default: ''
+        },
+        state: { 
+            type: String, 
+            default: '' 
+        },
     },
     geoLocation: {
         type: {
@@ -46,5 +68,7 @@ const userSchema = new mongoose.Schema ({
         default: Date.now,
     }
 })
+
+userSchema.index({ geoLocation: '2dsphere' });
 
 module.exports = mongoose.model('User', userSchema);

@@ -103,7 +103,6 @@ exports.listAll = async (req, res) => {
 
 exports.listByOwner = async (req, res) => {
   try {
-    console.log(req.body)
     const userId = req.user.userId
     const properties = await Property.find({ owner: userId}).populate('owner', 'name email')
 

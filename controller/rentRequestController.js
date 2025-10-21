@@ -3,7 +3,6 @@ const RentRequest = require('../models/RentRequest');
 
 exports.findAll = async (req, res) => {
     try {
-        console.log(req)
         if (!req.user || !req.user.userId) {
             return res.status(401).json({ error: 'Usuário não autenticado.' });
         }
@@ -31,7 +30,6 @@ exports.findAll = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        console.log(req.user)
         if (!req.user.userId || !req.user.walletAddress) {
             return res.status(401).json({ error: 'Usuário não autenticado ou sem carteira cadastrada.' });
         }
