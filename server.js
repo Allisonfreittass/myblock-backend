@@ -8,6 +8,8 @@ const contractRouter = require('./routes/contract-routes');
 const authRouter = require('./routes/auth-routes');
 const propertyRouter = require('./routes/properties-routes');
 const rentRequestRouter = require('./routes/rentRequest-route')
+const cron = require('node-cron')
+const { checkExpiredContracts } = require('./scripts/checkExpiredContracts')
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -20,6 +22,11 @@ app.use('/api', rentRequestRouter);
 app.use('/api', propertyRouter);
 app.use('/api', contractRouter);
 app.use('/auth', authRouter);
+
+cron.schedule('0 0 * * *', () => {
+  console.log('⏰ Rodando verificação diária...');
+  checkExpiredContracts();
+});
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {

@@ -1,67 +1,85 @@
-const fs = require('fs')
-const path = require('path')
-const { ethers } = require('ethers')
+const fs = require("fs");
+const path = require("path");
+const { ethers } = require("ethers");
+const Contract = require("../models/Contract");
 
-const contratoPath = path.join(__dirname, '../abi/Rent.json')
-const contratoJson = JSON.parse(fs.readFileSync(contratoPath, 'utf-8'))
-const contratoAddress = contratoJson.address
-const contratoAbi = contratoJson.abi
+const contratoPath = path.join(__dirname, "../abi/Rent.json");
+const contratoJson = JSON.parse(fs.readFileSync(contratoPath, "utf-8"));
+const contratoAddress = contratoJson.address;
+const contratoAbi = contratoJson.abi;
 
-// Cria o provider e signer com a chave privada e RPC
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL)
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider)
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const contratoInstance = new ethers.Contract(contratoAddress, contratoAbi, signer);
 
-const contratoInstance = new ethers.Contract(
-  contratoAddress,
-  contratoAbi,
-  signer
-)
-
-// Função: criar contrato na blockchain
 exports.createContract = async (req, res) => {
-  const { locatario, valor, imovel } = req.body
-
-  if (!locatario || !valor || !imovel) {
-    return res.status(400).json({ error: 'Campos obrigatórios ausentes.' })
-  }
-
   try {
-    const tx = await contratoInstance.createContract(locatario, ethers.parseEther(valor), imovel)
-    await tx.wait()
+    const {
+      locatario,
+      valor,
+      imovel,
+      dataInicio,
+      dataFim,
+      diaVencimento,
+      propertyId,
+      locador,
+    } = req.body;
+
+    if (!locatario || !valor || !imovel || !dataInicio || !dataFim || !diaVencimento)
+      return res.status(400).json({ error: "Campos obrigatórios ausentes." });
+
+    const tx = await contratoInstance.createContract(locatario, ethers.parseEther(valor), imovel);
+    const receipt = await tx.wait();
+
+    const contractSaved = await Contract.create({
+      blockchainId: Number(receipt.logs[0]?.args?.id || 0),
+      txHash: receipt.hash,
+      propertyId,
+      locador,
+      locatario,
+      valor,
+      imovel,
+      dataInicio,
+      dataFim,
+      diaVencimento,
+      status: "ativo",
+    });
 
     res.status(201).json({
-      message: 'Contrato criado na blockchain com sucesso.',
-      transactionHash: tx.hash
-    })
+      message: "Contrato registrado com sucesso.",
+      contract: contractSaved,
+    });
   } catch (err) {
-    console.error('Erro ao criar contrato:', err)
-    res.status(500).json({ error: 'Erro ao criar contrato na blockchain.' })
+    console.error("Erro ao criar contrato:", err);
+    res.status(500).json({ error: "Erro ao criar contrato na blockchain." });
   }
-}
+};
 
-// Função: listar todos os contratos cadastrados (por ID)
+
 exports.listContract = async (req, res) => {
   try {
-    const total = await contratoInstance.totalContratos()
-    const contratos = []
-
-    for (let i = 1; i <= Number(total); i++) {
-      const contrato = await contratoInstance.getContract(i)
-
-      contratos.push({
-        id: Number(contrato.id),
-        locador: contrato.locador,
-        locatario: contrato.locatario,
-        valor: contrato.valorAluguel.toString(),
-        imovel: contrato.imovel,
-        createdAt: contrato.createdAt.toString(),
-      })
-    }
-
-
-    res.json(contratos)
+    const contracts = await ContractModel.find().sort({ createdAt: -1 });
+    res.json(contracts);
   } catch (err) {
-    console.error('Erro ao listar contratos:', err)
-    res.status(500).json({ error: 'Erro ao buscar contratos da blockchain.' })
+    console.error('Erro ao listar contratos:', err);
+    res.status(500).json({ error: 'Erro ao buscar contratos.' });
   }
-}
+};
+
+exports.cancelContract = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const tx = await contratoInstance.cancelarContrato(id);
+    await tx.wait();
+
+    await ContractModel.findOneAndUpdate({ blockchainId: id }, { status: 'cancelado' });
+
+    res.json({
+      message: `Contrato ${id} cancelado com sucesso.`,
+      txHash: tx.hash,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Falha ao cancelar contrato' });
+  }
+};

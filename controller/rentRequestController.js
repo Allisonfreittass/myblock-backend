@@ -10,11 +10,11 @@ exports.findAll = async (req, res) => {
         const data = await RentRequest.find({ owner: req.user.userId })
             .populate({
                 path: 'property',
-                select: 'title fees.rentAmount'
+                select: 'title fees.rentAmount imageUrls'
             })
             .populate({
                 path: 'tenant',
-                select: 'name' 
+                select: 'name profilePictureUrl' 
             })
             .sort({ createdAt: -1 }); 
 
@@ -59,12 +59,14 @@ exports.update = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
+        console.log(req.body)
+
         if (!req.user || !req.user.userId) {
             return res.status(401).json({ error: 'Usuário não autenticado.' });
         }
 
         const requestToUpdate = await RentRequest.findById(id);
-        if (requestToUpdate.owner.toString() !== req.user.id) {
+        if (requestToUpdate.owner.toString() !== req.user.userId) {
             return res.status(403).json({ error: 'Você não tem permissão para atualizar este pedido.' });
         }
         

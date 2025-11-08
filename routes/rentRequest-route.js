@@ -7,6 +7,6 @@ router.post('/rent-requests', authService.authorize, rentRequestController.creat
 
 router.get('/rent-requests/my-requests', authService.authorize, rentRequestController.findAll);
 
-router.put('/rent-requests/:id/status', authService.authorize, rentRequestController.update);
+router.put('/rent-requests/:id/:status', authService.authorize, rentRequestController.update);
 
 module.exports = router;
