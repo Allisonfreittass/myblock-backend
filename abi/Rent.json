@@ -2,9 +2,52 @@
   "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
   "abi": [
     {
+      "type": "constructor",
+      "stateMutability": "undefined",
+      "payable": false,
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "OwnableInvalidOwner",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "owner"
+        }
+      ]
+    },
+    {
+      "type": "error",
+      "name": "OwnableUnauthorizedAccount",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "account"
+        }
+      ]
+    },
+    {
       "type": "error",
       "name": "ReentrancyGuardReentrantCall",
       "inputs": []
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "ContratoCancelado",
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "id",
+          "indexed": true
+        },
+        {
+          "type": "address",
+          "name": "canceladoPor",
+          "indexed": false
+        }
+      ]
     },
     {
       "type": "event",
@@ -53,6 +96,23 @@
     {
       "type": "event",
       "anonymous": false,
+      "name": "OwnershipTransferred",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "previousOwner",
+          "indexed": true
+        },
+        {
+          "type": "address",
+          "name": "newOwner",
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
       "name": "PagamentoRecebido",
       "inputs": [
         {
@@ -76,6 +136,31 @@
           "indexed": false
         }
       ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "SistemaPausado",
+      "inputs": [
+        {
+          "type": "bool",
+          "name": "estado",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "cancelarContrato",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_id"
+        }
+      ],
+      "outputs": []
     },
     {
       "type": "function",
@@ -267,6 +352,20 @@
     },
     {
       "type": "function",
+      "name": "owner",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
       "name": "pagarAluguel",
       "constant": false,
       "stateMutability": "payable",
@@ -277,6 +376,41 @@
           "name": "_id"
         }
       ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "pausarSistema",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "bool",
+          "name": "_estado"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "paused",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "renounceOwnership",
+      "constant": false,
+      "payable": false,
+      "inputs": [],
       "outputs": []
     },
     {
@@ -292,6 +426,19 @@
           "name": ""
         }
       ]
+    },
+    {
+      "type": "function",
+      "name": "transferOwnership",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "newOwner"
+        }
+      ],
+      "outputs": []
     }
   ]
 }
